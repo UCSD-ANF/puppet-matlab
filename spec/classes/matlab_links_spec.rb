@@ -16,7 +16,7 @@ describe 'matlab::links', :type=>'class' do
   context 'with basic params' do
     let(:params) { {
       :install_basedir => "/opt/test/matlab",
-      :dest_basedir => "/opt/local",
+      :link_basedir => "/opt/local",
     } }
 
     it { should contain_file('/opt/local/bin/matlab').with_ensure('link')\

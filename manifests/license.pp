@@ -8,7 +8,7 @@
 define matlab::license (
   $source,
   $install_basedir='UNSET',
-  $type = 'network'
+  $type = 'UNSET'
 ) {
   include matlab::params
 
@@ -17,9 +17,15 @@ define matlab::license (
     default => $install_basedir,
   }
 
+  $real_license_type = $type ? {
+    'UNSET' => $matlab::params::license_type,
+    default => $type,
+  }
+
   validate_absolute_path($real_install_basedir)
 
-  $manage_file_name = "${real_install_basedir}/licenses/${type}.lic"
+  $manage_file_name =
+    "${real_install_basedir}/licenses/${real_license_type}.lic"
 
   file { "Matlab License ${title}" :
     path => $manage_file_name,
