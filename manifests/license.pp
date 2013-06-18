@@ -3,15 +3,23 @@
 # a defined type rather than a class
 # == Parameters
 # [*install_basedir*] - top level directory where Matlab is installed
-# [*file*] - source file containing the license keys
+# [*source*] - source file containing the license keys
 # [*type*] - Usually 'network' for network license files.
 define matlab::license (
-  $install_basedir,
-  $file,
+  $source,
+  $install_basedir='UNSET',
   $type = 'network'
 ) {
+  include matlab::params
 
-  $manage_file_name = "${install_basedir}/licenses/${type}.lic"
+  $real_install_basedir = $install_basedir ? {
+    'UNSET' => $matlab::params::install_basedir,
+    default => $install_basedir,
+  }
+
+  validate_absolute_path($real_install_basedir)
+
+  $manage_file_name = "${real_install_basedir}/licenses/${type}.lic"
 
   file { "Matlab License ${title}" :
     path => $manage_file_name,
