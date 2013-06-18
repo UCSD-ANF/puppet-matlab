@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'matlab::license', :type=>'define' do
   let(:title) { 'R2012b' }
   let(:params) { {
-    :install_dir => "/opt/shared/matlab",
+    :install_basedir => "/opt/shared/matlab",
     :file => "puppet:///matlab/license/network.lic",
   } }
 
