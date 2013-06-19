@@ -52,16 +52,16 @@ class matlab::links (
 
   file { "${real_link_basedir}/bin/mcc" :
     ensure => $manage_link_ensure,
-    target => "${real_install_basedir}/bin/matlab",
+    target => "${real_install_basedir}/bin/mcc",
   }
 
   file { "${real_link_basedir}/bin/mex" :
     ensure => $manage_link_ensure,
-    target => "${real_install_basedir}/bin/matlab",
+    target => "${real_install_basedir}/bin/mex",
   }
 
   file { "${real_link_basedir}/bin/mbuild" :
     ensure => $manage_link_ensure,
-    target => "${real_install_basedir}/bin/matlab",
+    target => "${real_install_basedir}/bin/mbuild",
   }
 }
