@@ -5,13 +5,13 @@ describe 'matlab::links', :type=>'class' do
     .with_target('/opt/shared/matlab/bin/matlab') }
 
   it { should contain_file('/usr/local/bin/mcc').with_ensure('link')\
-    .with_target('/opt/shared/matlab/bin/matlab') }
+    .with_target('/opt/shared/matlab/bin/mcc') }
 
   it { should contain_file('/usr/local/bin/mex').with_ensure('link')\
-    .with_target('/opt/shared/matlab/bin/matlab') }
+    .with_target('/opt/shared/matlab/bin/mex') }
 
   it { should contain_file('/usr/local/bin/mbuild').with_ensure('link')\
-    .with_target('/opt/shared/matlab/bin/matlab') }
+    .with_target('/opt/shared/matlab/bin/mbuild') }
 
   context 'with basic params' do
     let(:params) { {
