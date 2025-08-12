@@ -1,34 +1,46 @@
 require 'spec_helper'
 
-describe 'matlab::license', :type=>'define' do
+describe 'matlab::license', type: 'define' do
   let(:title) { 'R2012b' }
-  let(:params) { {
-    :source => 'puppet:///matlab/license/network.lic',
-  } }
+  let(:params) do
+    {
+      source: 'puppet:///matlab/license/network.lic',
+    }
+  end
 
-  it { should contain_file('Matlab License R2012b').with_path(
-    '/opt/shared/matlab/licenses/network.lic')
+  it {
+    is_expected.to contain_file('Matlab License R2012b').with_path(
+    '/opt/shared/matlab/licenses/network.lic',
+  )
   }
 
   context 'with type = network' do
-    let(:params) { {
-      :source => 'puppet:///matlab/license/network.lic',
-      :type => 'network',
-    } }
+    let(:params) do
+      {
+        source: 'puppet:///matlab/license/network.lic',
+      type: 'network',
+      }
+    end
 
-    it { should contain_file('Matlab License R2012b').with_path(
-      '/opt/shared/matlab/licenses/network.lic')
+    it {
+      is_expected.to contain_file('Matlab License R2012b').with_path(
+      '/opt/shared/matlab/licenses/network.lic',
+    )
     }
   end
   context 'with type = license.dat' do
     let(:title) { 'R2006b' }
-    let(:params) { {
-      :source => 'puppet:///matlab/license/network.lic',
-      :type => 'license.dat',
-    } }
+    let(:params) do
+      {
+        source: 'puppet:///matlab/license/network.lic',
+      type: 'license.dat',
+      }
+    end
 
-    it { should contain_file('Matlab License R2006b').with_path(
-      '/opt/shared/matlab/etc/license.dat')
+    it {
+      is_expected.to contain_file('Matlab License R2006b').with_path(
+      '/opt/shared/matlab/etc/license.dat',
+    )
     }
   end
 end

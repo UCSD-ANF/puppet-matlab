@@ -1,40 +1,28 @@
 # Install a license file for Matlab
 # We support multiple versions of Matlab on a system simultaenously, so this is
 # a defined type rather than a class
-# == Parameters
-# [*install_basedir*] - top level directory where Matlab is installed
-# [*source*] - source file containing the license keys
-# [*type*] - The type of license file. Usually 'network' for network license
-# files. For older versions of Matlab (2006b for example), use "license.dat"
+#
+# @param source
+#   Source file path containing the license keys
+# @param install_basedir
+#   Top level directory where Matlab is installed
+# @param version
+#   MATLAB version identifier (defaults to the resource title)
+# @param type
+#   The type of license file ('network' for network.lic, 'license.dat' for older versions)
 define matlab::license (
-  $source,
-  $install_basedir='UNSET',
-  $version=$title,
-  $type = 'UNSET'
+  String $source,
+  Stdlib::Absolutepath $install_basedir = '/opt/shared/matlab',
+  String $version = $title,
+  Enum['network', 'license.dat'] $type = 'network',
 ) {
-  include matlab::params
-
-  $real_install_basedir = $install_basedir ? {
-    'UNSET' => $matlab::params::install_basedir,
-    default => $install_basedir,
+  $manage_file_name = $type ? {
+    'network'     => "${install_basedir}/licenses/network.lic",
+    'license.dat' => "${install_basedir}/etc/license.dat",
   }
 
-  $real_license_type = $type ? {
-    'UNSET' => $matlab::params::license_type,
-    default => $type,
+  file { "Matlab License ${title}":
+    path   => $manage_file_name,
+    source => $source,
   }
-
-  validate_re($real_license_type, ['^network', '^license.dat'])
-
-  validate_absolute_path($real_install_basedir)
-
-  $manage_file_name = $real_license_type ? {
-    'network'     => "${real_install_basedir}/licenses/network.lic",
-    'license.dat' => "${real_install_basedir}/etc/license.dat",
-  }
-
-  file { "Matlab License ${title}" :
-    path => $manage_file_name,
-  }
-
 }

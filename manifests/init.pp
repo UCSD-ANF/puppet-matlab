@@ -1,40 +1,34 @@
 # Manage matlab on supported platforms
+#
+# @param links
+#   Whether to create symlinks to MATLAB executables in the system PATH
+# @param install_basedir
+#   The base directory where MATLAB is installed or NFS shared
+# @param link_basedir
+#   The base directory where symlinks will be created (bin/ will be appended)
+# @param license_source
+#   Source file path containing the license keys (optional)
+# @param license_type
+#   The type of license file ('network' for network.lic, 'license.dat' for older versions)
 class matlab (
-  $links=true,
-  $install_basedir='UNSET',
-  $link_basedir='UNSET',
-  $license_source=undef,
-  $license_type='UNSET'
-){
-  include matlab::params
-
-  $real_install_basedir = $install_basedir ? {
-    'UNSET' => $matlab::params::install_basedir,
-    default  => $install_basedir,
-  }
-
-  $real_link_basedir = $link_basedir ? {
-    'UNSET' => $matlab::params::link_basedir,
-    default  => $link_basedir,
-  }
-
-  $real_license_type = $license_type ? {
-    'UNSET' => $matlab::params::license_type,
-    default => $license_type,
-  }
-
+  Boolean $links = true,
+  Stdlib::Absolutepath $install_basedir = '/opt/shared/matlab',
+  Stdlib::Absolutepath $link_basedir = '/usr/local',
+  Optional[String] $license_source = undef,
+  Enum['network', 'license.dat'] $license_type = 'network',
+) {
   if $links {
     class { 'matlab::links' :
-      install_basedir => $real_install_basedir,
-      link_basedir    => $real_link_basedir,
+      install_basedir => $install_basedir,
+      link_basedir    => $link_basedir,
     }
   }
 
   if $license_source {
-    matlab::license{ 'default':
+    matlab::license { 'default':
       source          => $license_source,
-      install_basedir => $real_install_basedir,
-      type            => $real_license_type,
+      install_basedir => $install_basedir,
+      type            => $license_type,
     }
   }
 }
