@@ -1,0 +1,7 @@
+---
+# Default parameter values for puppet-matlab module
+# These replace the legacy matlab::params class
+
+matlab::install_basedir: '/opt/shared/matlab'
+matlab::link_basedir: '/usr/local'
+matlab::license_type: 'network'
