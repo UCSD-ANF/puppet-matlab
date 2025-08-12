@@ -9,9 +9,11 @@ The puppet-matlab module follows standard Puppet module conventions with a clean
 ```
 manifests/
 ├── init.pp      - Main matlab class (entry point)
-├── params.pp    - Default parameter values
 ├── license.pp   - License file management (defined type)
 └── links.pp     - Executable symlink creation (class)
+
+data/
+└── common.yaml  - Default parameter values (Hiera)
 
 spec/
 ├── classes/     - Tests for classes
@@ -21,25 +23,29 @@ spec/
 ## Component Relationships
 
 ### Core Dependencies
-- [`manifests/init.pp`](manifests/init.pp) → includes [`manifests/params.pp`](manifests/params.pp) for defaults
+- [`manifests/init.pp`](manifests/init.pp) → uses Hiera data binding from [`data/common.yaml`](data/common.yaml) for defaults
 - [`manifests/init.pp`](manifests/init.pp) → conditionally includes [`manifests/links.pp`](manifests/links.pp)
 - [`manifests/init.pp`](manifests/init.pp) → conditionally creates [`matlab::license`](manifests/license.pp) resources
-- All components reference [`manifests/params.pp`](manifests/params.pp) for default values
+- All components use automatic parameter lookup from [`data/common.yaml`](data/common.yaml)
 
 ### Data Flow
 1. User declares `matlab` class with optional parameters
-2. Parameters are resolved using "UNSET" pattern with defaults from [`params.pp`](manifests/params.pp:3-5)
+2. Parameters are automatically resolved via Hiera data binding from [`data/common.yaml`](data/common.yaml)
 3. If `$links` is true, [`matlab::links`](manifests/links.pp) class is included
 4. If `$license_source` provided, [`matlab::license`](manifests/license.pp) defined type is instantiated
 
 ## Key Design Patterns
 
-### Parameter Defaulting Pattern
-Uses "UNSET" string values with conditional assignment to allow parameter inheritance:
+### Hiera Data Binding
+Uses automatic parameter lookup with modern data types:
 ```puppet
-$real_install_basedir = $install_basedir ? {
-  'UNSET' => $matlab::params::install_basedir,
-  default  => $install_basedir,
+class matlab (
+  Stdlib::Absolutepath $install_basedir,
+  Stdlib::Absolutepath $link_basedir,
+  Enum['network', 'standalone'] $license_type,
+  Boolean $links = true,
+) {
+  # Parameters automatically resolved from data/common.yaml
 }
 ```
 
@@ -65,13 +71,13 @@ Creates symlinks for four MATLAB executables:
 - `mbuild` - Build script for MEX-files
 
 ### Validation Strategy
-- [`validate_re()`](manifests/license.pp:27) for license type validation
-- [`validate_absolute_path()`](manifests/license.pp:29) for path validation
-- Ensures data integrity and prevents configuration errors
+- Modern data types (`Stdlib::Absolutepath`, `Enum`, `Boolean`) for compile-time validation
+- Type safety built into parameter declarations
+- Automatic validation of parameter values before catalog compilation
 
 ## Configuration Defaults
 
-Default values in [`manifests/params.pp`](manifests/params.pp):
+Default values in [`data/common.yaml`](data/common.yaml):
 - Install base: `/opt/shared/matlab` (NFS-friendly)
 - Link base: `/usr/local` (standard system location)
 - License type: `network` (enterprise default)
