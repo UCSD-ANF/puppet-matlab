@@ -1,6 +1,6 @@
 {
   "name": "puppet-matlab",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "author": "IGPP",
   "summary": "Puppet module for managing MATLAB software installations and configurations across Unix/Linux systems",
   "license": "Apache-2.0",

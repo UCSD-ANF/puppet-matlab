@@ -24,7 +24,7 @@ class matlab (
     }
   }
 
-  if $license_source {
+  if $license_source and $license_source != '' {
     matlab::license { 'default':
       source          => $license_source,
       install_basedir => $install_basedir,
